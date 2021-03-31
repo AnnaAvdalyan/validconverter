@@ -175,8 +175,6 @@ export default {
             }
         },
         getCryptApi() {
-            console.log(this.newPrice);
-
             this.symbols = this.selectedUp;
             let upSelect = this.selectedUp.toLowerCase();
             let downSelect = this.selectedDown.toLowerCase();
@@ -193,17 +191,21 @@ export default {
         },
         getApi() {
             if (this.api === false) {
-                this.finalTotal = (!/^[0-9]+$/.test(this.finalTotal) ? parseFloat(this.finalTotal) : this.finalTotal).toString() + this.cryptSymbol;
-                this.getCurrencyApi();
+                if (this.finalTotal.length > 0){
+                    this.finalTotal = (!/^[0-9]+$/.test(this.finalTotal) ? parseFloat(this.finalTotal) : this.finalTotal).toString() + this.cryptSymbol;
+                    this.getCurrencyApi();
+                }
             }
             if (this.api === true) {
-                this.newPrice = this.inputSymbol + (!/^[0-9]+$/.test(this.newPrice) ? this.newPrice.substr(1) : this.newPrice ).toString()
-                this.getCryptApi();
+                if (this.newPrice.length > 0){
+                    this.newPrice = this.inputSymbol + (!/^[0-9]+$/.test(this.newPrice) ? this.newPrice.substr(1) : this.newPrice ).toString()
+                    this.getCryptApi();
+                }
+
             }
         },
         discount(newPrice) {
             this.firstSumDiscount = this.inputSymbol + ((newPrice * 4.5) / 100).toString() ;
-            console.log(this.firstSumDiscount);
             this.cryptTotal = this.inputSymbol + (newPrice - this.firstSumDiscount.substr(1)).toString();
             return this.cryptTotal;
         },
