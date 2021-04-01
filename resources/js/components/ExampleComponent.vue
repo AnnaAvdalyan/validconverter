@@ -14,6 +14,7 @@
                                             class="form__input"
                                             id="sum"
                                             v-model="newPrice"
+                                            @keypress="showSymbol"
                                             @input="api=true"
                                             @keyup="getCryptApi"
                                     >
@@ -68,9 +69,10 @@
                                 <div class="form__currency">
                                     <input
                                             class="form__input"
-                                           id="commission1"
-                                           @input="api=false"
-                                           @keyup="getCurrencyApi"
+                                            id="commission1"
+                                            @change="showCryptSymbol"
+                                            @input="api=false"
+                                            @keyup="getCurrencyApi"
                                             v-model="finalTotal">
                                 </div>
                             </div>
@@ -168,9 +170,9 @@ export default {
                 return fetch('https://api.cryptonator.com/api/ticker/' + downSelect + '-' + upSelect).then((res) => {
                     return res.json();
                 }).then((data) => {
-                    this.newPrice = this.inputSymbol + (parseFloat(this.finalTotal) * data.ticker.price).toString()  ;
-                    this.firstSumDiscount = this.inputSymbol + ((this.newPrice.substr(1) * 4.5) / 100) ;
-                    this.cryptTotal =this.inputSymbol + (this.newPrice.substr(1) - this.firstSumDiscount.substr(1)).toString()
+                    this.newPrice = this.inputSymbol + " " +(parseFloat(this.finalTotal) * data.ticker.price).toString()  ;
+                    this.firstSumDiscount = this.inputSymbol + " " + ((this.newPrice.substr(1) * 4.5) / 100) ;
+                    this.cryptTotal =this.inputSymbol + " " +(this.newPrice.substr(1) - this.firstSumDiscount.substr(1)).toString()
                 })
             }
         },
@@ -184,7 +186,7 @@ export default {
                 return fetch('https://api.cryptonator.com/api/ticker/' + upSelect + '-' + downSelect).then((res) => {
                     return res.json();
                 }).then((data) => {
-                    this.finalTotal = (total.substr(1) * data.ticker.price).toString() + this.cryptSymbol ;
+                    this.finalTotal = (total.substr(1) * data.ticker.price).toString() + " " + this.cryptSymbol ;
 
                 })
             }
@@ -205,9 +207,15 @@ export default {
             }
         },
         discount(newPrice) {
-            this.firstSumDiscount = this.inputSymbol + ((newPrice * 4.5) / 100).toString() ;
-            this.cryptTotal = this.inputSymbol + (newPrice - this.firstSumDiscount.substr(1)).toString();
+            this.firstSumDiscount = this.inputSymbol + " " + ((newPrice * 4.5) / 100).toString() ;
+            this.cryptTotal = this.inputSymbol + " " + (newPrice - this.firstSumDiscount.substr(1)).toString();
             return this.cryptTotal;
+        },
+        showSymbol(){
+            this.newPrice =  this.inputSymbol + " " + (!/^[0-9]+$/.test(this.newPrice) ? this.newPrice.substr(1).trim() : this.newPrice ).toString();
+        },
+        showCryptSymbol(){
+            this.finalTotal = (!/^[0-9]+$/.test(this.finalTotal) ? parseFloat(this.finalTotal.trim()) : this.finalTotal).toString() + " " + this.cryptSymbol;
         },
         pressMe() {
             const box = document.querySelector('.box');
